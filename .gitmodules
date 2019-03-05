@@ -1,0 +1,6 @@
+[submodule "slack-api"]
+	path = slack-api
+	url = https://github.com/mbg/slack-api
+[submodule "anime"]
+	path = anime
+	url = https://github.com/fpclass/anime
