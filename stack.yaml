@@ -37,7 +37,7 @@ resolver: lts-14.12
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - slack-api
-- anime
+# - anime
 - .
 
 # Dependency packages to be pulled from upstream that are not in the resolver

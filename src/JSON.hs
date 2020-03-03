@@ -9,7 +9,7 @@ module JSON where
 
 --------------------------------------------------------------------------------
 
-import Data.Text
+-- import Data.Text
 
 import System.IO hiding (hGetContents)
 import System.IO.Strict
@@ -68,16 +68,45 @@ falseP = do
     pure (Bool False)
 
 numP :: Parser Value 
-numP = Num <$> nat
+numP = Num <$> nat 
+
+strP :: Parser Value 
+strP = Str <$> between quote quote (many (ch (/='"')))
+
+keyValueP :: Parser (String, Value)
+keyValueP = do 
+    Str key <- strP
+    token (ch (==':'))
+    val <- valueP
+    pure (key,val)
+
+objP :: Parser Value 
+objP = Obj <$> between (ch (=='{')) (token $ ch (=='}')) (sepBy (token keyValueP) (token $ ch (==',')))
 
 valueP :: Parser Value 
-valueP = token (nullP <|> trueP <|> falseP <|> numP <|> arrayP)
+valueP = token (nullP <|> trueP <|> falseP <|> numP <|> arrayP <|> strP <|> objP)
+
+parseFile :: FilePath -> IO (Maybe Value)
+parseFile fp = withFile fp ReadMode $ \h -> do
+    str <- hGetContents h 
+    pure (fst <$> parse valueP str)
+
 
 --------------------------------------------------------------------------------
 
 class FromJSON a where
     fromJSON :: Value -> Maybe a
 
+instance FromJSON Int where 
+    fromJSON (Num n) = Just $ fromInteger n
+    fromJSON _       = Nothing
 
+instance FromJSON a => FromJSON [a] where 
+    fromJSON (Arr arr) = mapM fromJSON arr
+    fromJSON _ = Nothing
+
+instance {-# OVERLAPPING #-} FromJSON String where 
+    fromJSON (Str xs) = Just xs 
+    fromJSON _ = Nothing
 
 --------------------------------------------------------------------------------
