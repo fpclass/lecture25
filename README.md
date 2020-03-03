@@ -1,2 +1,3 @@
-# lecture25
-Code shown in the 25th lecture, "Fun with IO"
+# Lecture: Fun with IO
+
+Code shown in the CS141 lecture titled "Fun with IO".

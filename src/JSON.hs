@@ -1,10 +1,9 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture 25: Fun with IO                                                    --
+-- Lecture: Fun with IO                                                       --
 --------------------------------------------------------------------------------
 
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
-{-# LANGUAGE OverlappingInstances #-}
 
 module JSON where
 
@@ -39,58 +38,40 @@ data Value = Obj Object
 -- instance Applicative Parser
 -- instance Monad Parser
 
+quote :: Parser Char 
+quote = ch (=='"')
+
 sepBy :: Parser a -> Parser sep -> Parser [a]
 sepBy p sep = go <|> pure []
-    where go = do
+    where go = do 
             r <- p
             rs <- many (sep *> p)
-            return (r:rs)
+            pure (r:rs)
 
-nullP :: Parser Value
-nullP = do
+arrayP :: Parser Value 
+arrayP = Arr <$> between (ch (=='[')) (token $ ch (==']')) 
+                    (sepBy valueP (token $ ch (==',')))
+
+nullP :: Parser Value 
+nullP = do 
     keyword "null"
-    return Null
+    pure Null
 
-trueP :: Parser Value
-trueP = do
+trueP :: Parser Value 
+trueP = do 
     keyword "true"
-    return $ Bool True
+    pure (Bool True)   
 
-falseP :: Parser Value
-falseP = do
+falseP :: Parser Value 
+falseP = do 
     keyword "false"
-    return $ Bool False
+    pure (Bool False)
 
-boolP :: Parser Value
-boolP = trueP <|> falseP
+numP :: Parser Value 
+numP = Num <$> nat
 
-natP :: Parser Value
-natP = Num <$> nat
-
-strP :: Parser Value
-strP = Str <$> between (ch (=='"')) (ch (=='"')) (many (ch (/='"')))
-
-arrP :: Parser Value
-arrP = Arr <$> between (ch (=='[')) (token $ ch (==']')) (sepBy valP (token $ ch (==',')))
-
-keyValueP :: Parser (String, Value)
-keyValueP = do
-    Str key <- strP
-    token (ch (==':'))
-    val <- valP
-    return (key, val)
-
-objP :: Parser Value
-objP = Obj <$> between (ch (=='{')) (token $ ch (=='}')) (sepBy (token keyValueP) (token $ ch (==',')))
-
-valP :: Parser Value
-valP = token (nullP <|> boolP <|> natP <|> strP <|> arrP <|> objP)
-
--- | `parseFile` @filepath@ parses a JSON document located at @filepath@.
-parseFile :: FilePath -> IO (Maybe Value)
-parseFile fp = withFile fp ReadMode $ \h -> do
-    xs <- hGetContents h
-    return (fst <$> parse valP xs)
+valueP :: Parser Value 
+valueP = token (nullP <|> trueP <|> falseP <|> numP <|> arrayP)
 
 --------------------------------------------------------------------------------
 

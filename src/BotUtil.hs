@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture 25: Fun with IO                                                    --
+-- Lecture: Fun with IO                                                       --
 --------------------------------------------------------------------------------
 
 -- | A simplified library for writing Slack bots.
@@ -52,7 +52,7 @@ botLoop handler slack = forever $ do
                     sendMessage slack (Id $ pack cid) (pack msg)
                     -- in anticipation of people spamming the Slack channel,
                     -- we rate-limit ourselves to one message per second
-                    threadDelay 1000000
+                    -- threadDelay 1000000
 
 -- | `runSlackBot` @token handler@ connects to the Slack RTM API using @token@
 -- and uses @handler@ to handle events.

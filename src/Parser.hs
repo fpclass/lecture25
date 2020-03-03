@@ -1,9 +1,13 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture 25: Fun with IO                                                    --
+-- Lecture: Fun with IO                                                       --
 --------------------------------------------------------------------------------
 
 module Parser where
+
+--------------------------------------------------------------------------------
+
+import Control.Monad.Fail
 
 import Data.Char
 
@@ -50,6 +54,9 @@ instance Monad Parser where
     MkParser a >>= f = MkParser $ \xs -> case a xs of
         Nothing     -> Nothing
         Just (x,ys) -> let (MkParser b) = f x in b ys
+
+instance MonadFail Parser where 
+    fail _ = MkParser $ const Nothing
 
 --------------------------------------------------------------------------------
 -- Alternative
