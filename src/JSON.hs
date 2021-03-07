@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture: Fun with IO                                                       --
+-- Lecture: Writing a real application in Haskell                             --
 --------------------------------------------------------------------------------
 
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
@@ -38,40 +38,7 @@ data Value = Obj Object
 -- instance Applicative Parser
 -- instance Monad Parser
 
-quote :: Parser Char 
-quote = ch (=='"')
 
-sepBy :: Parser a -> Parser sep -> Parser [a]
-sepBy p sep = go <|> pure []
-    where go = do 
-            r <- p
-            rs <- many (sep *> p)
-            pure (r:rs)
-
-arrayP :: Parser Value 
-arrayP = Arr <$> between (ch (=='[')) (token $ ch (==']')) 
-                    (sepBy valueP (token $ ch (==',')))
-
-nullP :: Parser Value 
-nullP = do 
-    keyword "null"
-    pure Null
-
-trueP :: Parser Value 
-trueP = do 
-    keyword "true"
-    pure (Bool True)   
-
-falseP :: Parser Value 
-falseP = do 
-    keyword "false"
-    pure (Bool False)
-
-numP :: Parser Value 
-numP = Num <$> nat
-
-valueP :: Parser Value 
-valueP = token (nullP <|> trueP <|> falseP <|> numP <|> arrayP)
 
 --------------------------------------------------------------------------------
 

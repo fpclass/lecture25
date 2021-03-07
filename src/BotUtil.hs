@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture: Fun with IO                                                       --
+-- Lecture: Writing a real application in Haskell                             --
 --------------------------------------------------------------------------------
 
 -- | A simplified library for writing Slack bots.

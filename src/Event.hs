@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Functional Programming (CS141)                                             --
--- Lecture: Fun with IO                                                       --
+-- Lecture: Writing a real application in Haskell                             --
 --------------------------------------------------------------------------------
 
 module Event where
@@ -17,9 +17,9 @@ import JSON
 
 data Event = Event {
     eventID       :: Integer,
-    eventName     :: String,
-    eventDateTime :: String,
-    eventWhere    :: String
+    eventName     :: Text,
+    eventDateTime :: Text,
+    eventWhere    :: Text
 } deriving Show
 
 --------------------------------------------------------------------------------

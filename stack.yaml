@@ -15,7 +15,7 @@
 # resolver:
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
-resolver: lts-14.12
+resolver: lts-16.27
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -37,7 +37,6 @@ resolver: lts-14.12
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - slack-api
-- anime
 - .
 
 # Dependency packages to be pulled from upstream that are not in the resolver
