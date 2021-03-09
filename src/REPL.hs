@@ -11,6 +11,7 @@ module REPL where
 
 import qualified Data.Map as M
 
+import Parser (parse)
 import JSON
 import Event
 
@@ -18,7 +19,7 @@ import System.IO
 
 --------------------------------------------------------------------------------
 
-type Events = M.Map Int Event
+type Events = M.Map Integer Event
 
 myEvents :: Events
 myEvents = M.fromList [
@@ -27,11 +28,19 @@ myEvents = M.fromList [
  ]
 
 repl :: IO ()
-repl = do
+repl = withFile "events.json" ReadMode $ \h -> do
+    str <- hGetContents h
+    
+    events <- case parseJSON str of
+        Nothing -> do 
+            putStrLn "Parse error!"
+            pure myEvents
+        Just xs -> pure $ M.fromList $ [ (eventID x, x) | x <- xs ]
+
     putStr "Enter an ID: "
     eventID <- read <$> getLine
 
-    case M.lookup eventID myEvents of 
+    case M.lookup eventID events of 
         Nothing -> putStrLn "Event not found!"
         Just e -> print e
 

@@ -114,12 +114,5 @@ token p = whitespace *> p
 between :: Parser open -> Parser close -> Parser a -> Parser a
 between open close p = open *> p <* close
 
--- | `keyword` @string@ parses @string@.
-keyword :: String -> Parser String
-keyword [] = return []
-keyword (x:xs) = do
-    y <- ch (==x)
-    ys <- keyword xs
-    return (y:ys)
 
 --------------------------------------------------------------------------------
